@@ -1,6 +1,6 @@
 # phil
 
-Agent loop/Block orchestration system. Named for Phil Connors (*Groundhog Day*) — repeats until the Stop condition is actually met, not a fixed count.
+Agent loop/Block orchestration system. Named for Phil Connors (*Groundhog Day*). Keep going until you find happiness.
 
 ## Why phil instead of a bare `/goal` or `/loop` prompt?
 
