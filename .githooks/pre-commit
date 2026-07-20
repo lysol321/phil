@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Pre-commit gate: run the phil prose linter when doctrine files are staged.
+# Blocks the commit on any ERROR. Bypass with `git commit --no-verify` if you
+# must (a deliberate WIP commit) — the gate is a guard, not a jail.
+# Enabled by: git config core.hooksPath .githooks   (one-time, per clone)
+set -u
+REPO="$(git rev-parse --show-toplevel)"
+
+# only lint when the commit touches doctrine or the linter itself — a commit
+# of only tmp/ ledgers or archive/ shouldn't pay for a lint run.
+staged="$(git diff --cached --name-only --diff-filter=ACM)"
+echo "$staged" | grep -qE '\.md$|^scripts/' || exit 0
+echo "$staged" | grep -qvE '^(tmp/|archive/)' || exit 0   # only tmp/archive → skip
+
+bash "$REPO/scripts/lint-phil.sh"
+rc=$?
+if [ "$rc" -ne 0 ]; then
+  echo ""
+  echo "pre-commit: lint-phil found errors (above). Fix them, or bypass with 'git commit --no-verify'."
+  exit 1
+fi
+exit 0

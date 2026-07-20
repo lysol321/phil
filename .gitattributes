@@ -1,0 +1,18 @@
+# Normalize every text file to LF in the repo AND on checkout, on every host
+# (Windows local box + headless Ubuntu VPS both run phil). Shell scripts and
+# the git hook MUST be LF: a CRLF `#!/usr/bin/env bash\r` is a "bad interpreter"
+# error under Linux bash. This also silences the core.autocrlf CRLF warnings.
+* text=auto eol=lf
+
+*.sh            text eol=lf
+*.md            text eol=lf
+/.githooks/pre-commit text eol=lf
+
+# Live state / ledgers are written by whatever host owns them — leave as-is.
+tmp/**          -text
+
+# Delivery: `git archive` excludes owner-local live state and history-bearing
+# records — the artifact ships doctrine, scripts, hooks, and the skill only.
+tmp             export-ignore
+archive         export-ignore
+instances.md    export-ignore
